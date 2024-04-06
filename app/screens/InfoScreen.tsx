@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import {Component, ReactNode} from 'react';
-import {Dimensions, ImageBackground, KeyboardAvoidingView, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Alert, Dimensions, ImageBackground, KeyboardAvoidingView, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { StackParamList } from '../navigation/StackParamList';
 import { RouteProp } from '@react-navigation/native';
 import { TextInput } from 'react-native-gesture-handler';
@@ -60,14 +60,6 @@ export default class InfoScreen extends Component<Props, State> {
   /******************************************************************************/
 
   /**
-   * Action: Press
-   * navigate user to the InfoScreen
-   */
-  private handleNavigate() {
-    // this.props.navigation.navigate("Info", {});
-  }
-
-  /**
    * Action: Type
    * update the text displayed on the input box
    */
@@ -83,6 +75,31 @@ export default class InfoScreen extends Component<Props, State> {
         this.setState({ age: typeof value === 'number' ? value : null})
     }
   }
+
+  /**
+   * Action: Press
+   * submit the text that the user typed
+   */
+  private handleSubmit() {
+    const { firstName, lastName, age } = this.state;
+    if (!firstName || !lastName || !age) {
+      Alert.alert('Missing Fields', 'Please fill in all three fields before submitting.');
+      return;
+    }
+  }
+
+  /******************************************************************************/
+  /**************************** NAVIGATION METHODS ******************************/
+  /******************************************************************************/
+
+  /**
+   * 
+   */
+  // private handleNavigate(routeName: string) {
+  //   this.props.navigation.navigate(routeName, {})
+  // }
+
+
   /******************************************************************************/
   /****************************** RENDER METHODS ********************************/
   /******************************************************************************/
@@ -105,7 +122,7 @@ export default class InfoScreen extends Component<Props, State> {
               style={[styles.inputBox, {color: 'rgba(255, 255, 255, 0.5)'}]}
               onChangeText={(firstName) => this.handleChange(firstName, 'firstName')}
               value={firstName}
-              placeholder='Kindly caress the screen as you type your first name'
+              placeholder='What is your first name?'
               placeholderTextColor={'black'}
             />
             <Text style={styles.mainText}>
@@ -115,7 +132,7 @@ export default class InfoScreen extends Component<Props, State> {
               style={[styles.inputBox, {color: 'black'}]}
               onChangeText={(lastName) => this.handleChange(lastName, 'lastName')}
               value={lastName}
-              placeholder='Touch me gently and give me your last name'
+              placeholder='What is your last name?'
               placeholderTextColor={'white'}
             />
             <Text style={styles.mainText}>
@@ -125,16 +142,16 @@ export default class InfoScreen extends Component<Props, State> {
               style={[styles.inputBox, {color: 'white'}]}
               onChangeText={(age) => this.handleChange(age, 'age')}
               value={age?.toString()}
-              placeholder='Now... how old are you?'
+              placeholder='How old are you?'
               placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
               keyboardType='numeric'
             />
-            <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Info", {})}>
+            <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
                 <Text style={styles.buttonText}>
-                  Submit
+                Submit
                 </Text>
             </TouchableOpacity>
-          </KeyboardAvoidingView>
+          </KeyboardAvoidingView>                        
         </SafeAreaView>
       </>
     );
