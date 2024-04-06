@@ -20,9 +20,12 @@ export interface InfoProps {
  * State
  */
 interface State {
-  firstName: string;
-  lastName: string;
-  age: number | null | undefined;
+  details: {
+    firstName: string;
+    lastName: string;
+    age: number | null | undefined;
+  }
+  // submittedData: null
 }
 
 export default class InfoScreen extends Component<Props, State> {
@@ -35,9 +38,12 @@ export default class InfoScreen extends Component<Props, State> {
     console.log('InfoScreen::Constructor::Firing');
 
     this.state = {
-      firstName: '',
-      lastName: '',
-      age: null,
+      details: {
+        firstName: '',
+        lastName: '',
+        age: null,
+      },
+      // submittedData: null
     };
   } // End of contructor()
 
@@ -66,13 +72,13 @@ export default class InfoScreen extends Component<Props, State> {
   private handleChange(value: string | number, identifier: string) {
     switch (identifier) {
       case 'firstName':
-        this.setState({ firstName: typeof value === 'string' ? value : '' });
+        this.setState({ details: { ...this.state.details, firstName: typeof value === 'string' ? value : '' }});
         break;
       case 'lastName':
-        this.setState({ lastName: typeof value === 'string' ? value : '' });
+        this.setState({ details: { ...this.state.details, lastName: typeof value === 'string' ? value : '' }});
         break;
       case 'age':
-        this.setState({ age: typeof value === 'number' ? value : null})
+        this.setState({ details: { ...this.state.details, age: typeof value === 'number' ? value : null }})
     }
   }
 
@@ -81,24 +87,18 @@ export default class InfoScreen extends Component<Props, State> {
    * submit the text that the user typed
    */
   private handleSubmit() {
-    const { firstName, lastName, age } = this.state;
-    if (!firstName || !lastName || !age) {
-      Alert.alert('Missing Fields', 'Please fill in all three fields before submitting.');
-      return;
-    }
+    const { firstName, lastName, age } = this.state.details;
+    // const submittedData: SubmittedData = { firstName, lastName, age };
+    // this.setState({ submittedData });
+    // if (!firstName || !lastName || !age) {
+    //   Alert.alert('Missing Fields', 'Please fill in all three fields before submitting.');
+    //   return;
+    // }
   }
 
   /******************************************************************************/
   /**************************** NAVIGATION METHODS ******************************/
   /******************************************************************************/
-
-  /**
-   * 
-   */
-  // private handleNavigate(routeName: string) {
-  //   this.props.navigation.navigate(routeName, {})
-  // }
-
 
   /******************************************************************************/
   /****************************** RENDER METHODS ********************************/
@@ -108,7 +108,7 @@ export default class InfoScreen extends Component<Props, State> {
     console.log('InfoScreen::Render::Firing');
     const windowWidth = Dimensions.get('screen').width;
     const windowHeight = Dimensions.get('screen').height;
-    const { firstName, lastName, age } = this.state;
+    const { firstName, lastName, age } = this.state.details;
     return (
       <>
         <StatusBar barStyle={"dark-content"}  translucent backgroundColor={"transparent"}></StatusBar>
