@@ -1,19 +1,30 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {Component, ReactNode} from 'react';
-import {Alert, Dimensions, ImageBackground, KeyboardAvoidingView, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { StackParamList } from '../navigation/StackParamList';
-import { RouteProp } from '@react-navigation/native';
-import { TextInput } from 'react-native-gesture-handler';
+import {
+  Alert,
+  Dimensions,
+  ImageBackground,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {StackParamList} from '../navigation/StackParamList';
+import {RouteProp} from '@react-navigation/native';
+import {TextInput} from 'react-native-gesture-handler';
 
 /**
  * Props
  */
 interface Props {
-  navigation: StackNavigationProp<StackParamList, 'Info'>
-  route: RouteProp<StackParamList, 'Info'>
+  navigation: StackNavigationProp<StackParamList, 'Info'>;
+  route: RouteProp<StackParamList, 'Info'>;
 }
 
 export interface InfoProps {
+  colorScheme: string | null | undefined;
 }
 
 /**
@@ -24,7 +35,7 @@ interface State {
     firstName: string;
     lastName: string;
     age: number | null | undefined;
-  }
+  };
   // submittedData: null
 }
 
@@ -68,32 +79,34 @@ export default class InfoScreen extends Component<Props, State> {
   /**
    * Action: Type
    * update the text displayed on the input box
+   * TODO: figure out how to deal with null or undefined values
    */
   private handleChange(value: string | number, identifier: string) {
     switch (identifier) {
       case 'firstName':
-        this.setState({ details: { ...this.state.details, firstName: typeof value === 'string' ? value : '' }});
+        this.setState({
+          details: {
+            ...this.state.details, // creates a new object, copying the properties of 
+            firstName: typeof value === 'string' ? value : '',
+          },
+        });
         break;
       case 'lastName':
-        this.setState({ details: { ...this.state.details, lastName: typeof value === 'string' ? value : '' }});
+        this.setState({
+          details: {
+            ...this.state.details,
+            lastName: typeof value === 'string' ? value : '',
+          },
+        });
         break;
       case 'age':
-        this.setState({ details: { ...this.state.details, age: typeof value === 'number' ? value : null }})
+        this.setState({
+          details: {
+            ...this.state.details,
+            age: typeof value === 'string' ? parseInt(value) : null,
+          },
+        });
     }
-  }
-
-  /**
-   * Action: Press
-   * submit the text that the user typed
-   */
-  private handleSubmit() {
-    const { firstName, lastName, age } = this.state.details;
-    // const submittedData: SubmittedData = { firstName, lastName, age };
-    // this.setState({ submittedData });
-    // if (!firstName || !lastName || !age) {
-    //   Alert.alert('Missing Fields', 'Please fill in all three fields before submitting.');
-    //   return;
-    // }
   }
 
   /******************************************************************************/
@@ -108,50 +121,60 @@ export default class InfoScreen extends Component<Props, State> {
     console.log('InfoScreen::Render::Firing');
     const windowWidth = Dimensions.get('screen').width;
     const windowHeight = Dimensions.get('screen').height;
-    const { firstName, lastName, age } = this.state.details;
+    const {firstName, lastName, age} = this.state.details;
+    const {colorScheme} = this.props.route.params;
     return (
       <>
-        <StatusBar barStyle={"dark-content"}  translucent backgroundColor={"transparent"}></StatusBar>
+        <StatusBar
+          barStyle={'dark-content'}
+          translucent
+          backgroundColor={'transparent'}></StatusBar>
         <SafeAreaView style={styles.safeAreaContainer}>
           <KeyboardAvoidingView style={styles.mainContainer}>
-            {/* three text inputs for name year and age, if i can figure it out can also incorporate use of Camera */}
-            <Text style={styles.mainText}>
-              First Name:
-            </Text>
+            {/* three text inputs for name year and age */}
+            <Text style={styles.mainText}>First Name:</Text>
             <TextInput
               style={[styles.inputBox, {color: 'rgba(255, 255, 255, 0.5)'}]}
-              onChangeText={(firstName) => this.handleChange(firstName, 'firstName')}
+              onChangeText={firstName =>
+                this.handleChange(firstName, 'firstName')
+              }
               value={firstName}
-              placeholder='What is your first name?'
+              placeholder="What is your first name?"
               placeholderTextColor={'black'}
             />
-            <Text style={styles.mainText}>
-              Last Name:
-            </Text>
+            <Text style={styles.mainText}>Last Name:</Text>
             <TextInput
               style={[styles.inputBox, {color: 'black'}]}
-              onChangeText={(lastName) => this.handleChange(lastName, 'lastName')}
+              onChangeText={lastName => this.handleChange(lastName, 'lastName')}
               value={lastName}
-              placeholder='What is your last name?'
+              placeholder="What is your last name?"
               placeholderTextColor={'white'}
             />
-            <Text style={styles.mainText}>
-              Age: 
-            </Text>
+            <Text style={styles.mainText}>Age:</Text>
             <TextInput
               style={[styles.inputBox, {color: 'white'}]}
-              onChangeText={(age) => this.handleChange(age, 'age')}
+              onChangeText={age => this.handleChange(age, 'age')}
               value={age?.toString()}
-              placeholder='How old are you?'
+              placeholder="How old are you?"
               placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
-              keyboardType='numeric'
+              keyboardType="numeric"
             />
-            <TouchableOpacity style={styles.button} onPress={this.handleSubmit}>
-                <Text style={styles.buttonText}>
-                Submit
-                </Text>
+            {/* submit button will pass the this.state.details and this.props.route.params from InfoScreen to ProfileProps in ProfileScreen  */}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                this.props.navigation.navigate('Profile', {
+                  colorScheme: colorScheme,
+                  details: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    age: age,
+                  },
+                })
+              }>
+              <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
-          </KeyboardAvoidingView>                        
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </>
     );
@@ -169,11 +192,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 150,
     paddingHorizontal: 20,
-    backgroundColor: "#87ceeb",
+    backgroundColor: '#87ceeb',
   },
   inputBox: {
     height: 50,
-    width: '90%' ,
+    width: '90%',
     marginVertical: 10,
     marginHorizontal: 20,
     paddingHorizontal: 15,

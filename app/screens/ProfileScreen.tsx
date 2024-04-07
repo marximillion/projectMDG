@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import {Component, ReactNode} from 'react';
-import {Button, StyleSheet, Text} from 'react-native';
+import {Button, KeyboardAvoidingView, SafeAreaView, StatusBar, StyleSheet, Text} from 'react-native';
 import { StackParamList } from '../navigation/StackParamList';
 import { RouteProp } from '@react-navigation/native';
 
@@ -13,10 +13,11 @@ interface Props {
 }
 
 export interface ProfileProps {
+  colorScheme: string | null | undefined;
   details: {
     firstName: string;
     lastName: string;
-    age: number;
+    age: number | null | undefined;
   }
 }
 
@@ -54,21 +55,47 @@ export default class ProfileScreen extends Component<Props, State> {
 
   public render(): ReactNode {
     console.log('ProfileScreen::Render::Firing');
-
+    const { details } = this.props.route.params;
+    console.log(details.age);
     return (
       <>
-        <Text>Success to ProfileScreen</Text>
+        <StatusBar
+          barStyle={'dark-content'}
+          translucent
+          backgroundColor={'transparent'}></StatusBar>
+        <SafeAreaView style={styles.safeAreaContainer}>
+          <KeyboardAvoidingView style={styles.mainContainer}>
+            <Text style={styles.mainText}>
+              Nice to meet you {details.firstName} {details.lastName}{`\n`}
+              You are {details.age} years old!
+              {/* TODO: uncomment line 71 when InfoScreen.tsx line 82 is handles*/}
+              {/* {details.age > 24 ? 'You are older than 24' : 'You are 24 or younger'}  */}
+            </Text>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  headerText: {
-    fontSize: 50,
+  safeAreaContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  mainContainer: {
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+    flex: 1,
+    paddingTop: 150,
+    paddingHorizontal: 20,
+    backgroundColor: '#87ceeb',
+  },
+  mainText: {
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
-    textAlign: 'center',
+    textAlign: 'left',
     margin: 10,
   },
 });

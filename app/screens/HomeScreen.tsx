@@ -15,13 +15,12 @@ interface Props {
 }
 
 export interface HomeProps {
-
+  colorScheme: string | null | undefined,
 }
 /**
  * State
  */
 interface State {
-  colorScheme: 'light' | 'dark' | null | undefined,
 }
 
 export default class HomeScreen extends Component<Props, State> {
@@ -32,11 +31,12 @@ export default class HomeScreen extends Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    console.log('HomeScreen::Constructor::Firing');
+    // console.log('HomeScreen::Constructor::Firing');
 
     this.state = {
       colorScheme: Appearance.getColorScheme(),
     };
+    
   } // End of contructor()
 
   /**
@@ -68,6 +68,7 @@ export default class HomeScreen extends Component<Props, State> {
    */
   public render(): ReactNode {
     console.log('HomeScreen::Render::Firing');
+    const { colorScheme } = this.props.route.params;
     return (
       <>
         <ImageBackground
@@ -78,11 +79,11 @@ export default class HomeScreen extends Component<Props, State> {
         <StatusBar barStyle={"dark-content"}  translucent backgroundColor={"transparent"}></StatusBar>
         <SafeAreaView style={styles.safeAreaContainer}>
           <KeyboardAvoidingView style={styles.mainContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Info", {})}>
+            <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Info", {colorScheme: colorScheme})}>
                 <Text style={styles.buttonText}>
-                  ENTER IF YOU DARE
+                  ENTER IF YOU DARE!!!
                 </Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
           </KeyboardAvoidingView>
           </SafeAreaView>
         </ImageBackground>
