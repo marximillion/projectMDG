@@ -3,15 +3,18 @@
  */
 import React, {Component, ReactNode} from 'react';
 import {NavigableAppContainer} from './app/navigation/NavigableAppContainer.tsx';
+import { Appearance } from 'react-native';
 /**
  * Props
  */
-interface Props {}
-
+interface Props {
+}
+  
 /**
  * State
  */
-interface State {}
+interface State {
+}
 
 /**
  * App Screen
@@ -24,9 +27,11 @@ export default class App extends Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    console.log('Constructor::Firing');
+    
+    this.state = {
+    };
 
-    this.state = {};
+    // console.log('Constructor::Firing');
   } // End of contructor()
 
   /**

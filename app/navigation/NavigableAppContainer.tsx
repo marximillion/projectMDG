@@ -11,6 +11,7 @@ import {StackParamList} from './StackParamList';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import InfoScreen from '../screens/InfoScreen';
+import { Appearance } from 'react-native';
 
 /**
  * Initialization
@@ -37,6 +38,7 @@ function MainStack() {
  * @returns React.JSX.Element
  */
 export function NavigableAppContainer() {
+  const colorScheme = Appearance.getColorScheme();
   return (
     // ref={navRef}
     <NavigationContainer>
@@ -44,6 +46,7 @@ export function NavigableAppContainer() {
         <Stack.Screen
           name={'Home'}
           component={HomeScreen}
+          initialParams={{colorScheme: colorScheme}}
           options={{headerShown: false}}
         />
         <Stack.Screen
