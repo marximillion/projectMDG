@@ -20,6 +20,8 @@
 3. Create a new ReactNative project
 * npm react-native@latest init <projectName>
 * npm react-native@X.XX.X init AwesomeProject -version X.XX.X
+4. Start metro 
+* npm run android
 
 
 
