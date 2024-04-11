@@ -15,7 +15,7 @@ interface Props {
 }
 
 export interface HomeProps {
-  colorScheme: string | null | undefined,
+  colorScheme: string | null | undefined
 }
 /**
  * State
@@ -34,7 +34,6 @@ export default class HomeScreen extends Component<Props, State> {
     // console.log('HomeScreen::Constructor::Firing');
 
     this.state = {
-      colorScheme: Appearance.getColorScheme(),
     };
     
   } // End of contructor()
