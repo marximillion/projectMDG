@@ -54,7 +54,6 @@ export default class InfoScreen extends Component<Props, State> {
         lastName: '',
         age: null,
       },
-      // submittedData: null
     };
   } // End of contructor()
 
@@ -78,34 +77,76 @@ export default class InfoScreen extends Component<Props, State> {
 
   /**
    * Action: Type
-   * update the text displayed on the input box
-   * TODO: figure out how to deal with null or undefined values
+   * update the text displayed on text input box
    */
-  private handleChange(value: string | number, identifier: string) {
+  private handleChangeText(value: string, identifier: string) {
+    // trims the value for leading, trailing whitespaces, and any non-letter character except for ' 
+    const trimmedValue = value.trim().replace(/[^a-zA-Z']/g, '') 
+    // if length of string is greater than 20, it will get the characters for index 0 to 20
+    // otherwise, it will return the entire string
+    const finalValue = trimmedValue.length > 20 ? trimmedValue.substring(0, 20) : trimmedValue;
     switch (identifier) {
       case 'firstName':
         this.setState({
           details: {
             ...this.state.details, // creates a new object, copying the properties of 
-            firstName: typeof value === 'string' ? value : '',
+            firstName: typeof value === 'string' ? finalValue.trim() : '',
           },
         });
         break;
-      case 'lastName':
-        this.setState({
-          details: {
-            ...this.state.details,
-            lastName: typeof value === 'string' ? value : '',
-          },
-        });
-        break;
-      case 'age':
-        this.setState({
-          details: {
-            ...this.state.details,
-            age: typeof value === 'string' ? parseInt(value) : null,
-          },
-        });
+        case 'lastName':
+          this.setState({
+            details: {
+              ...this.state.details, // creates a new object, copying the properties of 
+              lastName: typeof value === 'string' ? finalValue.trim() : '',
+            },
+          });
+          break;
+    }
+  }
+
+  /**
+   * Action: Type
+   * update the text displayed on numeric input box
+   */
+  private handleChangeNumber(value: string) {
+    // Convert string value to number
+    const intValue = parseInt(value);
+
+    // Check if the input value is empty or a valid number with at most 3 digits and less than 117 (oldest person in the world)
+    if (value === '' || (!isNaN(intValue) && /^[0-9]{1,3}$/.test(value) && intValue <= 117) ) {
+      this.setState({
+        details: { // nested object within the state
+          ...this.state.details, // spreads the properties of current details state object 
+          age: value === '' ? null : intValue, // assign null if empty, if not assign the value
+        }
+      });
+    }
+    else {
+      Alert.alert("Stop lying you're not older than the oldest person in the world")
+    }
+    console.log(intValue)
+  }
+
+  /**
+   * Action: Press
+   * submit state values as props to the Profile screen
+   * TODO: find out why it needs to be an arrow function?!?!?!?!
+   */
+  private handleSubmit = () => {
+    const { firstName, lastName, age } = this.state.details;
+    if (!firstName || !lastName || !age){
+      Alert.alert("All fields are required");
+    }
+    else {
+      this.props.navigation.navigate('Profile', {
+        colorScheme: this.props.route.params.colorScheme,
+        details: {
+          firstName: firstName,
+          lastName: lastName,
+          age: age,
+        }
+      })
     }
   }
 
@@ -136,7 +177,7 @@ export default class InfoScreen extends Component<Props, State> {
             <TextInput
               style={[styles.inputBox, {color: 'rgba(255, 255, 255, 0.5)'}]}
               onChangeText={firstName =>
-                this.handleChange(firstName, 'firstName')
+                this.handleChangeText(firstName, 'firstName')
               }
               value={firstName}
               placeholder="What is your first name?"
@@ -145,7 +186,7 @@ export default class InfoScreen extends Component<Props, State> {
             <Text style={styles.mainText}>Last Name:</Text>
             <TextInput
               style={[styles.inputBox, {color: 'black'}]}
-              onChangeText={lastName => this.handleChange(lastName, 'lastName')}
+              onChangeText={lastName => this.handleChangeText(lastName, 'lastName')}
               value={lastName}
               placeholder="What is your last name?"
               placeholderTextColor={'white'}
@@ -153,7 +194,7 @@ export default class InfoScreen extends Component<Props, State> {
             <Text style={styles.mainText}>Age:</Text>
             <TextInput
               style={[styles.inputBox, {color: 'white'}]}
-              onChangeText={age => this.handleChange(age, 'age')}
+              onChangeText={age => this.handleChangeNumber(age)}                                            
               value={age?.toString()}
               placeholder="How old are you?"
               placeholderTextColor={'rgba(255, 255, 255, 0.5)'}
@@ -162,16 +203,8 @@ export default class InfoScreen extends Component<Props, State> {
             {/* submit button will pass the this.state.details and this.props.route.params from InfoScreen to ProfileProps in ProfileScreen  */}
             <TouchableOpacity
               style={styles.button}
-              onPress={() =>
-                this.props.navigation.navigate('Profile', {
-                  colorScheme: colorScheme,
-                  details: {
-                    firstName: firstName,
-                    lastName: lastName,
-                    age: age,
-                  },
-                })
-              }>
+              onPress={this.handleSubmit}
+            >
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
           </KeyboardAvoidingView>
